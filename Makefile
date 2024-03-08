@@ -1,0 +1,67 @@
+
+NAME_CLIENT = client
+NAME_SERVER = server
+NAME_CLIENT_BONUS = client_bonus
+NAME_SERVER_BONUS = server_bonus
+
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+
+SRC_DIR = src
+BONUS_SRC_DIR = bonus
+LIBFT_DIR = lib/libft_bonus
+FT_PRINTF_DIR = lib/printf
+INC_DIR = headers
+
+SRC_CLIENT = $(SRC_DIR)/client.c
+SRC_SERVER = $(SRC_DIR)/server.c
+OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
+OBJ_SERVER = $(SRC_SERVER:.c=.o)
+
+SRC_CLIENT_BONUS = $(BONUS_SRC_DIR)/client.c
+SRC_SERVER_BONUS = $(BONUS_SRC_DIR)/server.c
+OBJ_CLIENT_BONUS = $(SRC_CLIENT_BONUS:.c=.o)
+OBJ_SERVER_BONUS = $(SRC_SERVER_BONUS:.c=.o)
+
+LIBFT = $(LIBFT_DIR)/libft.a
+FT_PRINTF = $(FT_PRINTF_DIR)/libftprintf.a
+LIBS = -L$(LIBFT_DIR) -lft -L$(FT_PRINTF_DIR) -lftprintf
+
+HEADERS = -I$(INC_DIR) -I$(LIBFT_DIR) -I$(FT_PRINTF_DIR)
+
+all: $(NAME_CLIENT) $(NAME_SERVER)
+
+bonus: $(NAME_CLIENT_BONUS) $(NAME_SERVER_BONUS)
+
+$(NAME_CLIENT_BONUS): $(LIBFT) $(FT_PRINTF) $(OBJ_CLIENT_BONUS)
+	$(CC) $(CFLAGS) $(OBJ_CLIENT_BONUS) $(HEADERS) $(LIBS) -o $(NAME_CLIENT_BONUS)
+
+$(NAME_SERVER_BONUS): $(LIBFT) $(FT_PRINTF) $(OBJ_SERVER_BONUS)
+	$(CC) $(CFLAGS) $(OBJ_SERVER_BONUS) $(HEADERS) $(LIBS) -o $(NAME_SERVER_BONUS)
+
+$(NAME_CLIENT): $(LIBFT) $(FT_PRINTF) $(OBJ_CLIENT)
+	$(CC) $(CFLAGS) $(OBJ_CLIENT) $(HEADERS) $(LIBS) -o $(NAME_CLIENT)
+
+$(NAME_SERVER): $(LIBFT) $(FT_PRINTF) $(OBJ_SERVER)
+	$(CC) $(CFLAGS) $(OBJ_SERVER) $(HEADERS) $(LIBS) -o $(NAME_SERVER)
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(FT_PRINTF):
+	$(MAKE) -C $(FT_PRINTF_DIR)
+
+clean:
+	$(MAKE) -C $(LIBFT_DIR) clean
+	$(MAKE) -C $(FT_PRINTF_DIR) clean
+	rm -f $(OBJ_CLIENT) $(OBJ_SERVER) $(OBJ_CLIENT_BONUS) $(OBJ_SERVER_BONUS)
+
+fclean: clean
+	$(MAKE) -C $(LIBFT_DIR) fclean
+	$(MAKE) -C $(FT_PRINTF_DIR) fclean
+	rm -f $(NAME_CLIENT) $(NAME_CLIENT_BONUS)
+	rm -f $(NAME_SERVER) $(NAME_SERVER_BONUS)
+
+re: fclean all
+
+.PHONY: all clean fclean re
